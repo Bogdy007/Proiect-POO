@@ -82,3 +82,42 @@ namespace Story.Core.Models
         [JsonPropertyName("effects")]
         public List<Efect> Effects { get; set; } = new List<Efect>();
     }
+     public class Conditie
+    {
+        [JsonPropertyName("type")]
+        public string Type { get; set; }
+
+        [JsonPropertyName("property")]
+        public string Property { get; set; }
+
+        [JsonPropertyName("operator")]
+        public string Operator { get; set; }
+
+        [JsonPropertyName("value")]
+        public int Value { get; set; }
+
+        [JsonPropertyName("conditions")]
+        public List<Conditie> Conditions { get; set; } = new List<Conditie>();
+    }
+
+    public class Efect
+    {
+        [JsonPropertyName("type")]
+        public string Type { get; set; }
+
+        [JsonPropertyName("property")]
+        public string Property { get; set; }
+
+        [JsonPropertyName("value")]
+        public int Value { get; set; }
+    }
+
+    public class StareJoc
+    {
+        [JsonPropertyName("currentBlock")]
+        public string IdBlocCurent { get; set; }
+
+        [JsonPropertyName("attributes")]
+        public Dictionary<string, int> Atribute { get; set; } = new Dictionary<string, int>();
+    }
+}
