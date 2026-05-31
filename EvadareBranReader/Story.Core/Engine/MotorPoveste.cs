@@ -91,3 +91,77 @@ namespace Story.Core.Engine
             };
             return JsonSerializer.Serialize(stare, new JsonSerializerOptions { WriteIndented = true });
         }
+        public void ImportaStare(string jsonStare)
+        {
+            var stare = JsonSerializer.Deserialize<StareJoc>(jsonStare);
+            if (stare == null) throw new Exception("Fișierul de stare este invalid.");
+
+            StareAtribute = new Dictionary<string, int>(stare.Atribute ?? new Dictionary<string, int>());
+            IdBlocCurent = stare.IdBlocCurent;
+            _istoric.Clear();
+        }
+
+        public string AplicaEfecteSiObtineRedirectionare(Decizie decizie)
+        {
+            foreach (var efect in decizie.Effects)
+            {
+                if (StareAtribute.ContainsKey(efect.Property))
+                {
+                    var defAtribut = PovesteCurenta.Attributes.First(a => a.Key == efect.Property);
+                    int valoareNoua = StareAtribute[efect.Property];
+
+                    if (efect.Type == "ADD")
+                        valoareNoua += efect.Value;
+                    else if (efect.Type == "SET")
+                        valoareNoua = efect.Value;
+
+                    valoareNoua = Math.Max(defAtribut.Min, Math.Min(defAtribut.Max, valoareNoua));
+                    StareAtribute[efect.Property] = valoareNoua;
+
+                    if (valoareNoua == defAtribut.Min && !string.IsNullOrEmpty(defAtribut.MinBlock))
+                        return defAtribut.MinBlock;
+
+                    if (valoareNoua == defAtribut.Max && !string.IsNullOrEmpty(defAtribut.MaxBlock))
+                        return defAtribut.MaxBlock;
+                }
+            }
+            return null;
+        }
+
+        public bool EvalueazaConditie(Conditie cond)
+        {
+            if (cond == null) return true;
+
+            if (cond.Type == "COMPARISON")
+            {
+                if (!StareAtribute.ContainsKey(cond.Property)) return false;
+                int valoareCurenta = StareAtribute[cond.Property];
+
+                switch (cond.Operator)
+                {
+                    case "==": return valoareCurenta == cond.Value;
+                    case "!=": return valoareCurenta != cond.Value;
+                    case ">":  return valoareCurenta > cond.Value;
+                    case ">=": return valoareCurenta >= cond.Value;
+                    case "<":  return valoareCurenta < cond.Value;
+                    case "<=": return valoareCurenta <= cond.Value;
+                    default:   return false;
+                }
+            }
+            else if (cond.Type == "AND")
+            {
+                foreach (var subCond in cond.Conditions)
+                    if (!EvalueazaConditie(subCond)) return false;
+                return true;
+            }
+            else if (cond.Type == "OR")
+            {
+                foreach (var subCond in cond.Conditions)
+                    if (EvalueazaConditie(subCond)) return true;
+                return false;
+            }
+
+            return false;
+        }
+    }
+}
