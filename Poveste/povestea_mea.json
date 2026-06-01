@@ -1,0 +1,547 @@
+{
+  "title": "Evadarea din Bran",
+  "startBlock": "celula",
+  "properties": [
+    {
+      "key": "player.viata",
+      "hudLabel": "Viata",
+      "min": 0,
+      "max": 100,
+      "initial": 80,
+      "visibleInHud": true,
+      "hudOrder": 1,
+      "onMinBlock": "final.moarte"
+    },
+    {
+      "key": "player.energie",
+      "hudLabel": "Energie",
+      "min": 0,
+      "max": 100,
+      "initial": 50,
+      "visibleInHud": true,
+      "hudOrder": 2
+    },
+    {
+      "key": "inventory.bani",
+      "hudLabel": "Bani",
+      "min": 0,
+      "max": 150,
+      "initial": 10,
+      "visibleInHud": true,
+      "hudOrder": 3
+    },
+    {
+      "key": "story.suspiciune",
+      "hudLabel": "Suspiciune",
+      "min": 0,
+      "max": 100,
+      "initial": 0,
+      "visibleInHud": true,
+      "hudOrder": 4,
+      "onMaxBlock": "final.prins"
+    },
+    {
+      "key": "story.areCheie",
+      "hudLabel": "Cheie",
+      "min": 0,
+      "max": 1,
+      "initial": 0,
+      "visibleInHud": false,
+      "hudOrder": 90
+    },
+    {
+      "key": "story.areSabie",
+      "hudLabel": "Sabie",
+      "min": 0,
+      "max": 1,
+      "initial": 0,
+      "visibleInHud": false,
+      "hudOrder": 91
+    },
+    {
+      "key": "story.areHarta",
+      "hudLabel": "Harta",
+      "min": 0,
+      "max": 1,
+      "initial": 0,
+      "visibleInHud": false,
+      "hudOrder": 92
+    }
+  ],
+  "blocks": [
+    {
+      "id": "celula",
+      "text": "Te trezesti intr-o celula din Castelul Bran. E intuneric si frig. Vezi un schelet vechi pe jos, un cufar prafuit in colt si o fereastra mica cu gratii.",
+      "image": "images/celula.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Caut prin schelet",
+          "targetBlock": "schelet",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -5 }
+          ]
+        },
+        {
+          "text": "Deschid cufarul (am nevoie de energie >= 25)",
+          "targetBlock": "cufar",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.energie",
+            "operator": ">=",
+            "value": 25
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 }
+          ]
+        },
+        {
+          "text": "Ma uit pe fereastra",
+          "targetBlock": "fereastra"
+        },
+        {
+          "text": "Strig dupa ajutor",
+          "targetBlock": "gardian",
+          "effects": [
+            { "type": "ADD", "property": "story.suspiciune", "value": 20 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "schelet",
+      "text": "In mana scheletului gasesc o cheie ruginita si o harta veche a castelului. Pot lua una sau pe ambele.",
+      "image": "images/schelet.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Iau cheia",
+          "targetBlock": "celula",
+          "effects": [
+            { "type": "SET", "property": "story.areCheie", "value": 1 }
+          ]
+        },
+        {
+          "text": "Iau harta",
+          "targetBlock": "celula",
+          "effects": [
+            { "type": "SET", "property": "story.areHarta", "value": 1 }
+          ]
+        },
+        {
+          "text": "Le iau pe ambele",
+          "targetBlock": "celula",
+          "effects": [
+            { "type": "SET", "property": "story.areCheie", "value": 1 },
+            { "type": "SET", "property": "story.areHarta", "value": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cufar",
+      "text": "In cufar gasesc o sabie veche si o punga cu 30 de bani. E praf peste tot.",
+      "image": "images/cufar.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Iau sabia si banii",
+          "targetBlock": "celula",
+          "effects": [
+            { "type": "SET", "property": "story.areSabie", "value": 1 },
+            { "type": "ADD", "property": "inventory.bani", "value": 30 }
+          ]
+        },
+        {
+          "text": "Iau doar banii",
+          "targetBlock": "celula",
+          "effects": [
+            { "type": "ADD", "property": "inventory.bani", "value": 30 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fereastra",
+      "text": "Pe fereastra vad curtea castelului. E un gardian care patruleaza si o conducta veche pe perete. Cred ca pot incerca sa o cobor.",
+      "image": "images/fereastra.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Cobor pe conducta (energie >= 35)",
+          "targetBlock": "curte",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.energie",
+            "operator": ">=",
+            "value": 35
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -20 },
+            { "type": "ADD", "property": "player.viata", "value": -10 }
+          ]
+        },
+        {
+          "text": "Ma intorc in celula",
+          "targetBlock": "celula"
+        }
+      ]
+    },
+    {
+      "id": "gardian",
+      "text": "Un gardian intra in celula. Ma loveste cu bastonul. 'Ce mai vrei, prizonierule?'",
+      "image": "images/gardian.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Imi cer scuze",
+          "targetBlock": "celula",
+          "effects": [
+            { "type": "ADD", "property": "player.viata", "value": -10 },
+            { "type": "ADD", "property": "story.suspiciune", "value": -5 }
+          ]
+        },
+        {
+          "text": "Il mituiesc (am nevoie de cel putin 20 bani)",
+          "targetBlock": "coridor",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "inventory.bani",
+            "operator": ">=",
+            "value": 20
+          },
+          "effects": [
+            { "type": "ADD", "property": "inventory.bani", "value": -20 },
+            { "type": "ADD", "property": "story.suspiciune", "value": -10 }
+          ]
+        },
+        {
+          "text": "Il atac cu sabia (am nevoie de sabie SI energie > 25)",
+          "targetBlock": "lupta",
+          "condition": {
+            "type": "AND",
+            "conditions": [
+              { "type": "COMPARISON", "property": "story.areSabie", "operator": "==", "value": 1 },
+              { "type": "COMPARISON", "property": "player.energie", "operator": ">", "value": 25 }
+            ]
+          },
+          "effects": [
+            { "type": "ADD", "property": "story.suspiciune", "value": 15 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lupta",
+      "text": "Lupta cu gardianul a inceput. E bine antrenat dar eu am sabia.",
+      "image": "images/lupta.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Il lovesc tare",
+          "targetBlock": "lupta",
+          "effects": [
+            { "type": "ADD", "property": "player.viata", "value": -15 },
+            { "type": "ADD", "property": "player.energie", "value": -15 }
+          ]
+        },
+        {
+          "text": "Il dobor (energie > 20 SI viata > 25)",
+          "targetBlock": "coridor",
+          "condition": {
+            "type": "AND",
+            "conditions": [
+              { "type": "COMPARISON", "property": "player.energie", "operator": ">", "value": 20 },
+              { "type": "COMPARISON", "property": "player.viata", "operator": ">", "value": 25 }
+            ]
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.viata", "value": -10 },
+            { "type": "ADD", "property": "inventory.bani", "value": 15 }
+          ]
+        },
+        {
+          "text": "Fug inapoi in celula",
+          "targetBlock": "celula",
+          "effects": [
+            { "type": "ADD", "property": "story.suspiciune", "value": 10 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coridor",
+      "text": "Sunt pe coridorul principal al castelului. La capat vad poarta mare. Pe stanga e bucataria si pe dreapta o scara care coboara in pivnita.",
+      "image": "images/coridor.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Merg la bucatarie",
+          "targetBlock": "bucatarie"
+        },
+        {
+          "text": "Cobor in pivnita",
+          "targetBlock": "pivnita",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -5 }
+          ]
+        },
+        {
+          "text": "Merg la poarta principala",
+          "targetBlock": "poarta"
+        },
+        {
+          "text": "Ma intorc in celula",
+          "targetBlock": "celula",
+          "effects": [
+            { "type": "ADD", "property": "story.suspiciune", "value": 5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bucatarie",
+      "text": "Bucataria e plina de mancare. Bucatarul doarme pe un scaun. Vad paine, sunca si o sticla de vin.",
+      "image": "images/bucatarie.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Mananc in liniste",
+          "targetBlock": "coridor",
+          "effects": [
+            { "type": "ADD", "property": "player.viata", "value": 20 },
+            { "type": "ADD", "property": "player.energie", "value": 25 }
+          ]
+        },
+        {
+          "text": "Fur mancare pentru drum",
+          "targetBlock": "coridor",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": 15 },
+            { "type": "ADD", "property": "story.suspiciune", "value": 10 }
+          ]
+        },
+        {
+          "text": "Fur si banii bucatarului",
+          "targetBlock": "coridor",
+          "effects": [
+            { "type": "ADD", "property": "inventory.bani", "value": 25 },
+            { "type": "ADD", "property": "story.suspiciune", "value": 20 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pivnita",
+      "text": "Pivnita e plina de butoaie de vin. In spatele unui butoi mare vad o usa de lemn cu lacat. Pe perete e desenata o sageata, probabil ducea spre un tunel vechi.",
+      "image": "images/pivnita.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Deschid usa cu cheia",
+          "targetBlock": "tunel",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.areCheie",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "text": "Sparg lacatul cu sabia (energie > 20)",
+          "targetBlock": "tunel",
+          "condition": {
+            "type": "AND",
+            "conditions": [
+              { "type": "COMPARISON", "property": "story.areSabie", "operator": "==", "value": 1 },
+              { "type": "COMPARISON", "property": "player.energie", "operator": ">", "value": 20 }
+            ]
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -15 },
+            { "type": "ADD", "property": "story.suspiciune", "value": 10 }
+          ]
+        },
+        {
+          "text": "Beau vin pentru curaj",
+          "targetBlock": "pivnita",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": 10 },
+            { "type": "ADD", "property": "player.viata", "value": -5 }
+          ]
+        },
+        {
+          "text": "Ma intorc",
+          "targetBlock": "coridor"
+        }
+      ]
+    },
+    {
+      "id": "tunel",
+      "text": "Tunelul e ingust si miroase a umezeala. Apa picura din tavan. La capat se vede lumina zilei!",
+      "image": "images/tunel.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Merg pana la capat",
+          "targetBlock": "final.evadareTunel",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -15 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "poarta",
+      "text": "Poarta principala e pazita de doi gardieni. Are si o usa mica pe lateral cu un lacat.",
+      "image": "images/poarta.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Folosesc cheia pe usa mica",
+          "targetBlock": "curte",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.areCheie",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "text": "Ii mituiesc pe gardieni (bani >= 50)",
+          "targetBlock": "final.evadareMita",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "inventory.bani",
+            "operator": ">=",
+            "value": 50
+          },
+          "effects": [
+            { "type": "ADD", "property": "inventory.bani", "value": -50 }
+          ]
+        },
+        {
+          "text": "Ii atac (sabie SI viata > 50 SI energie > 40)",
+          "targetBlock": "final.victorie",
+          "condition": {
+            "type": "AND",
+            "conditions": [
+              { "type": "COMPARISON", "property": "story.areSabie", "operator": "==", "value": 1 },
+              { "type": "COMPARISON", "property": "player.viata", "operator": ">", "value": 50 },
+              { "type": "COMPARISON", "property": "player.energie", "operator": ">", "value": 40 }
+            ]
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.viata", "value": -25 }
+          ]
+        },
+        {
+          "text": "Strecor printre umbre (harta SAU suspiciune < 20)",
+          "targetBlock": "curte",
+          "condition": {
+            "type": "OR",
+            "conditions": [
+              { "type": "COMPARISON", "property": "story.areHarta", "operator": "==", "value": 1 },
+              { "type": "COMPARISON", "property": "story.suspiciune", "operator": "<", "value": 20 }
+            ]
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 }
+          ]
+        },
+        {
+          "text": "Ma intorc",
+          "targetBlock": "coridor",
+          "effects": [
+            { "type": "ADD", "property": "story.suspiciune", "value": 5 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "curte",
+      "text": "Sunt in curtea castelului. La poarta e drumul spre padure. La grajd vad un cal negru legat. Pot incerca sa fug pe jos sau cu calul.",
+      "image": "images/curte.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Iau calul si fug (energie >= 25)",
+          "targetBlock": "final.evadareCal",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.energie",
+            "operator": ">=",
+            "value": 25
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -20 }
+          ]
+        },
+        {
+          "text": "Fug in padure pe jos",
+          "targetBlock": "final.evadarePadure",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -15 }
+          ]
+        },
+        {
+          "text": "Ma odihnesc dupa zid (risc sa fiu vazut)",
+          "targetBlock": "curte",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": 15 },
+            { "type": "ADD", "property": "story.suspiciune", "value": 20 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "final.evadareTunel",
+      "text": "Tunelul m-a scos direct in padure, departe de castel. Nimeni nu m-a vazut iesind!\n\n*** SFARSIT - AI EVADAT PRIN TUNEL ***",
+      "image": "images/evadareTunel.jpg",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.evadareCal",
+      "text": "Sar pe cal si galopez prin poarta deschisa. Vantul imi sufla in fata. Sunt liber!\n\n*** SFARSIT - AI EVADAT CALARE ***",
+      "image": "images/evadareCal.jpg",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.evadarePadure",
+      "text": "Alerg cat pot in padure. Frunzele ma ascund de gardieni. Reusesc sa scap!\n\n*** SFARSIT - AI EVADAT IN PADURE ***",
+      "image": "images/evadarePadure.jpg",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.evadareMita",
+      "text": "Gardienii numara banii si imi deschid poarta. 'Treci si nu mai veni inapoi!' imi spun.\n\n*** SFARSIT - AI SCAPAT CU MITA ***",
+      "image": "images/evadareMita.jpg",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.victorie",
+      "text": "Cu sabia in mana ii doboram pe gardieni unul cate unul. Ies cu mandrie pe poarta. Castelul Bran va vorbi mult timp despre mine!\n\n*** SFARSIT - VICTORIE EROICA ***",
+      "image": "images/victorie.jpg",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.moarte",
+      "text": "Nu mai am putere. Cad jos si nu ma mai pot ridica. Asta e sfarsitul.\n\n*** SFARSIT - AI MURIT ***",
+      "image": "images/moarte.jpg",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.prins",
+      "text": "Gardienii m-au prins. Ma duc inapoi in temnita, intr-o celula mai adanca decat prima. De aici nu mai am nicio sansa.\n\n*** SFARSIT - AI FOST PRINS ***",
+      "image": "images/prins.jpg",
+      "isFinal": true,
+      "decisions": []
+    }
+  ]
+}
