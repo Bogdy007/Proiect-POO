@@ -4,7 +4,7 @@ namespace EvadareBranReader
     {
     
     
-        [STAThread]
+        
         static void Main()
         {
            
