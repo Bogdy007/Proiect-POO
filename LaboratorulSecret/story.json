@@ -1,0 +1,735 @@
+{
+  "title": "Laboratorul Secret",
+  "startBlock": "trezire",
+  "properties": [
+    {
+      "key": "player.viata",
+      "hudLabel": "Viata",
+      "min": 0,
+      "max": 100,
+      "initial": 100,
+      "visibleInHud": true,
+      "hudOrder": 1,
+      "onMinBlock": "final.moarte"
+    },
+    {
+      "key": "player.energie",
+      "hudLabel": "Energie",
+      "min": 0,
+      "max": 100,
+      "initial": 70,
+      "visibleInHud": true,
+      "hudOrder": 2
+    },
+    {
+      "key": "player.inteligenta",
+      "hudLabel": "IQ",
+      "min": 0,
+      "max": 100,
+      "initial": 75,
+      "visibleInHud": true,
+      "hudOrder": 3
+    },
+    {
+      "key": "story.alarma",
+      "hudLabel": "Alarma",
+      "min": 0,
+      "max": 100,
+      "initial": 0,
+      "visibleInHud": true,
+      "hudOrder": 4,
+      "onMaxBlock": "final.prins"
+    },
+    {
+      "key": "story.areCardAcces",
+      "hudLabel": "CardAcces",
+      "min": 0,
+      "max": 1,
+      "initial": 0,
+      "visibleInHud": false,
+      "hudOrder": 90
+    },
+    {
+      "key": "story.areAntidot",
+      "hudLabel": "Antidot",
+      "min": 0,
+      "max": 1,
+      "initial": 0,
+      "visibleInHud": false,
+      "hudOrder": 91
+    },
+    {
+      "key": "story.areCodul",
+      "hudLabel": "CodEvacuare",
+      "min": 0,
+      "max": 1,
+      "initial": 0,
+      "visibleInHud": false,
+      "hudOrder": 92
+    },
+    {
+      "key": "story.aHackluit",
+      "hudLabel": "SistemHackuit",
+      "min": 0,
+      "max": 1,
+      "initial": 0,
+      "visibleInHud": false,
+      "hudOrder": 93
+    }
+  ],
+  "blocks": [
+    {
+      "id": "trezire",
+      "text": "Te trezesti pe o masa de metal intr-o camera alba, rece. Esti imbracati cu o salopeta alba cu numarul 4721. Nu iti amintesti cum ai ajuns aici. Un ecran pe perete afiseaza: 'SUBIECT 4721 - EXPERIMENT ACTIV'. Usa metalica e incuiata. Camera are un calculator pe masa, un ventilator de aerisire in tavan si un geam mic cu gratii.",
+      "image": "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Incerc sa accesez calculatorul",
+          "targetBlock": "calculator",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -5 }
+          ]
+        },
+        {
+          "text": "Examinez ventilatorul de aerisire",
+          "targetBlock": "ventilator",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 }
+          ]
+        },
+        {
+          "text": "Ma uit pe geamul cu gratii",
+          "targetBlock": "geam_lab",
+          "effects": []
+        },
+        {
+          "text": "Incerc sa sparg usa cu forta (viata > 60)",
+          "targetBlock": "sparg_usa",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.viata",
+            "operator": ">",
+            "value": 60
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.viata", "value": -20 },
+            { "type": "ADD", "property": "story.alarma", "value": 30 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "calculator",
+      "text": "Calculatorul e blocat cu o parola. Pe ecran e o interfata de cercetare. Poti vedea fisiere: 'Experiment 4721 - Faza 3', 'Harta laborator', 'Sistem securitate'. Langa tastatura e un post-it cu scris de mana: 'Parola: RADIX-9'. Cineva a lasat-o intentionat.",
+      "image": "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Introduc parola RADIX-9 si caut harta laboratorului",
+          "targetBlock": "harta_lab",
+          "effects": [
+            { "type": "ADD", "property": "player.inteligenta", "value": 10 }
+          ]
+        },
+        {
+          "text": "Deschid fisierul despre Experimentul 4721",
+          "targetBlock": "fisier_experiment",
+          "effects": [
+            { "type": "ADD", "property": "player.inteligenta", "value": 5 }
+          ]
+        },
+        {
+          "text": "Incerc sa hackluiesc sistemul de securitate (IQ > 70)",
+          "targetBlock": "hackluire",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.inteligenta",
+            "operator": ">",
+            "value": 70
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -15 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fisier_experiment",
+      "text": "Fisierul spune ca esti subiect de test pentru un virus experimental. Ai 6 ore pana cand virusul devine activ in corp. Antidotul se afla in LABORATOR B, nivel -2. Accesul necesita un card de securitate NIVEL 3. Inima iti bate mai repede.",
+      "image": "https://images.unsplash.com/photo-1576086213369-97a306d36557?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Caut harta laboratorului acum",
+          "targetBlock": "harta_lab",
+          "effects": [
+            { "type": "ADD", "property": "player.inteligenta", "value": 5 }
+          ]
+        },
+        {
+          "text": "Incerc hackluirea sistemului de securitate (IQ > 70)",
+          "targetBlock": "hackluire",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.inteligenta",
+            "operator": ">",
+            "value": 70
+          },
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "harta_lab",
+      "text": "Harta arata un laborator complex pe 3 niveluri. Esti pe nivelul 0. Nivel -1: birouri, server room, vestiare. Nivel -2: laboratoare B, C, D si camera de decontaminare. Nivel +1: birou director, helipad. Iesirile marcate: USA PRINCIPALA (nivel 0) si USA EVACUARE (nivel -1). Codul de evacuare nu e pe harta.",
+      "image": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Caut calea spre vestiar — poate gasesc un card acolo",
+          "targetBlock": "ventilator",
+          "effects": [
+            { "type": "ADD", "property": "player.inteligenta", "value": 5 }
+          ]
+        },
+        {
+          "text": "Incerc hackluirea pentru a deschide usa celulei",
+          "targetBlock": "hackluire",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.inteligenta",
+            "operator": ">",
+            "value": 70
+          },
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "hackluire",
+      "text": "Gasesti o vulnerabilitate in sistemul de securitate. Cu multa concentrare reusesti sa dezactivezi temporar usile de pe nivelul 0. Sistemul de alarma inregistreaza activitate suspcta — nivelul de alerta creste.",
+      "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Ies pe culoar cat usile sunt deschise",
+          "targetBlock": "culoar",
+          "effects": [
+            { "type": "SET", "property": "story.aHackluit", "value": 1 },
+            { "type": "ADD", "property": "story.alarma", "value": 20 }
+          ]
+        },
+        {
+          "text": "Inainte de a iesi, caut si codul de evacuare in sistem",
+          "targetBlock": "cod_evacuare",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.inteligenta",
+            "operator": ">",
+            "value": 80
+          },
+          "effects": [
+            { "type": "ADD", "property": "story.alarma", "value": 10 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cod_evacuare",
+      "text": "Gasesti in sistem codul de evacuare: EXODUS-7744. Il memorezi. De asemenea, gasesti ca alarma se poate dezactiva manual de la panoul de control din server room.",
+      "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Ies pe culoar cu aceasta informatie",
+          "targetBlock": "culoar",
+          "effects": [
+            { "type": "SET", "property": "story.aHackluit", "value": 1 },
+            { "type": "SET", "property": "story.areCodul", "value": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ventilator",
+      "text": "Grila ventilatorului e prea mica sa treci prin ea normal. Dar daca o demontezi, observi ca duce intr-o conducta mai larga de ventilatie. Pare ca ai putea sa te taraisti prin ea. E intuneric si clar ca e o cursa de praf.",
+      "image": "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Intru in conducta de ventilatie (energie > 40)",
+          "targetBlock": "conducta",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.energie",
+            "operator": ">",
+            "value": 40
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -25 }
+          ]
+        },
+        {
+          "text": "Ma duc la calculator mai intai",
+          "targetBlock": "calculator",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "conducta",
+      "text": "Te taraisti prin conducta timp de cateva minute. E sufocant. Ajungi la o intersectie — stanga duce spre un zgomot de servere, dreapta spre lumina. In mijloc e o grila cu o camera de securitate dedesubt.",
+      "image": "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Merg stanga spre zgomotul de servere (server room)",
+          "targetBlock": "server_room",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 }
+          ]
+        },
+        {
+          "text": "Merg dreapta spre lumina",
+          "targetBlock": "vestiar",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "server_room",
+      "text": "Cobori prin grila in server room. E plin de servere care huruie. Gasesti panoul de control al alarmei — poti reseta alarma la 0. In coltul camerei, agatat de un scaun, e un card de acces cu 'NIVEL 3' inscris pe el.",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Iau cardul de acces NIVEL 3",
+          "targetBlock": "server_room_card",
+          "effects": [
+            { "type": "SET", "property": "story.areCardAcces", "value": 1 }
+          ]
+        },
+        {
+          "text": "Resetez alarma la panou",
+          "targetBlock": "server_room_alarma",
+          "effects": [
+            { "type": "SET", "property": "story.alarma", "value": 0 }
+          ]
+        },
+        {
+          "text": "Fac amandoua",
+          "targetBlock": "server_room_complet",
+          "effects": [
+            { "type": "SET", "property": "story.areCardAcces", "value": 1 },
+            { "type": "SET", "property": "story.alarma", "value": 0 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "server_room_card",
+      "text": "Ai cardul de acces. Acum trebuie sa gasesti antidotul in Lab B si sa evadezi.",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Ies din server room pe culoar",
+          "targetBlock": "culoar",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "server_room_alarma",
+      "text": "Alarma e resetata. Ai mai mult timp. Dar nu ai inca cardul de acces.",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Iau si cardul inainte de a iesi",
+          "targetBlock": "server_room_complet",
+          "effects": [
+            { "type": "SET", "property": "story.areCardAcces", "value": 1 }
+          ]
+        },
+        {
+          "text": "Ies fara card si caut alta cale",
+          "targetBlock": "culoar",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "server_room_complet",
+      "text": "Ai cardul de acces si alarma resetata. Esti intr-o pozitie excelenta. Acum trebuie sa cobori la nivelul -2 pentru antidot.",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Ies pe culoar",
+          "targetBlock": "culoar",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "vestiar",
+      "text": "Ajungi la vestiar. E gol. In dulapuri gasesti haine civile (bune pentru a trece neobservat) si un card de acces agatat de un cuier — NIVEL 2 insa, nu 3. In buzunarul unui halat de laborator gasesti o nota: 'Antidot depozitat si in dulapul medical de la intrare. Cod dulap: 7291.'",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Iau cardul NIVEL 2 si hainele civile",
+          "targetBlock": "vestiar_echipat",
+          "effects": [
+            { "type": "ADD", "property": "player.inteligenta", "value": 10 }
+          ]
+        },
+        {
+          "text": "Ies pe culoar",
+          "targetBlock": "culoar",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "vestiar_echipat",
+      "text": "In haine civile poti trece drept un vizitator sau cercetator. Cardul NIVEL 2 iti deschide birourile si camera de decontaminare, dar nu Lab B.",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Ies pe culoar — trebuie sa gasesc cardul NIVEL 3 sau antidotul",
+          "targetBlock": "culoar",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "sparg_usa",
+      "text": "Arunci cu umarul in usa metalica. Te lovesti rau. Usa are o mica fisura dar nu cedeaza. Alarma se declanseaza partial.",
+      "image": "https://images.unsplash.com/photo-1504439904031-93ded9f93e4e?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Incerc din nou (viata > 40 si energie > 30)",
+          "targetBlock": "sparge_usa2",
+          "condition": {
+            "type": "AND",
+            "conditions": [
+              { "type": "COMPARISON", "property": "player.viata", "operator": ">", "value": 40 },
+              { "type": "COMPARISON", "property": "player.energie", "operator": ">", "value": 30 }
+            ]
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.viata", "value": -20 },
+            { "type": "ADD", "property": "story.alarma", "value": 30 }
+          ]
+        },
+        {
+          "text": "Renunt si caut alta cale",
+          "targetBlock": "trezire",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "sparge_usa2",
+      "text": "La a doua incercare usa cedeaza. Esti pe culoar, dar alarma a sunat partial. Ai la dispozitie mai putin timp.",
+      "image": "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Alerg pe culoar",
+          "targetBlock": "culoar",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "geam_lab",
+      "text": "Pe geam vezi un culoar alb cu lumini rosii pulsante. Trec cativa oameni in halate albe. Nu par agitati — rutina normala. Ai timp sa observi ca la fiecare usa e un cititor de carduri. Un barbat in costum negru vorbeste la telefon. Pare a fi un ofiter de securitate.",
+      "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Ma duc la calculator sa caut informatii",
+          "targetBlock": "calculator",
+          "effects": []
+        },
+        {
+          "text": "Incerc ventilatorul",
+          "targetBlock": "ventilator",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "culoar",
+      "text": "Esti pe culoarele institutului. E o activitate normala in jur. Nimeni nu te-a oprit inca. In fata ta: scara spre nivelul -1, lift spre nivelul -2 (necesita card NIVEL 3), dulap medical la perete si usa de evacuare cu tastatura digitala.",
+      "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Incerc dulapul medical (stiu codul 7291 din nota)",
+          "targetBlock": "dulap_medical",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.inteligenta",
+            "operator": ">",
+            "value": 80
+          },
+          "effects": []
+        },
+        {
+          "text": "Cobor cu liftul la Lab B (am card NIVEL 3)",
+          "targetBlock": "lab_b",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.areCardAcces",
+            "operator": "==",
+            "value": 1
+          },
+          "effects": [
+            { "type": "ADD", "property": "story.alarma", "value": 5 }
+          ]
+        },
+        {
+          "text": "Folosesc usa de evacuare cu codul EXODUS-7744 (am codul)",
+          "targetBlock": "final.evacuare_curata",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.areCodul",
+            "operator": "==",
+            "value": 1
+          },
+          "effects": []
+        },
+        {
+          "text": "Cobor pe scara la nivelul -1 sa explorez",
+          "targetBlock": "nivel_minus1",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -5 }
+          ]
+        },
+        {
+          "text": "Ies prin usa principala cu forta (alarma > 0 - risc)",
+          "targetBlock": "final.alerta",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.alarma",
+            "operator": ">",
+            "value": 0
+          },
+          "effects": [
+            { "type": "ADD", "property": "story.alarma", "value": 50 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dulap_medical",
+      "text": "Codul 7291 functioneaza! In dulap gasesti antidotul — o seringa cu lichid albastru etichetata 'ANTIVIRUS-4X'. Il iei. De asemenea, sunt bandaje si medicamente de baza.",
+      "image": "https://images.unsplash.com/photo-1576086213369-97a306d36557?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Iau antidotul si bandajele",
+          "targetBlock": "culoar_cu_antidot",
+          "effects": [
+            { "type": "SET", "property": "story.areAntidot", "value": 1 },
+            { "type": "ADD", "property": "player.viata", "value": 15 }
+          ]
+        },
+        {
+          "text": "Iau doar antidotul si ma grабesc spre iesire",
+          "targetBlock": "culoar_cu_antidot",
+          "effects": [
+            { "type": "SET", "property": "story.areAntidot", "value": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "culoar_cu_antidot",
+      "text": "Ai antidotul. Acum trebuie sa evadezi. Ii aplici singur — virusul va fi neutralizat in cateva ore. Usa de evacuare e in fata ta. Usa principala e mai departe. Liftul e langa tine.",
+      "image": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Iesire evacuare cu codul (am codul EXODUS-7744)",
+          "targetBlock": "final.evacuare_curata",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.areCodul",
+            "operator": "==",
+            "value": 1
+          },
+          "effects": []
+        },
+        {
+          "text": "Urc cu liftul la helipad — caut o ruta alternativa",
+          "targetBlock": "helipad",
+          "effects": [
+            { "type": "ADD", "property": "story.alarma", "value": 10 }
+          ]
+        },
+        {
+          "text": "Ies prin usa principala pur si simplu (riscant)",
+          "targetBlock": "final.evadare_riscanta",
+          "effects": [
+            { "type": "ADD", "property": "story.alarma", "value": 30 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nivel_minus1",
+      "text": "Nivelul -1 are birouri si server room la stanga, vestiare la dreapta. Auzi voci — cineva discuta despre un subiect evadat. Au inceput cautarile. Trebuie sa te grabesti.",
+      "image": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Intru in server room",
+          "targetBlock": "server_room",
+          "effects": [
+            { "type": "ADD", "property": "story.alarma", "value": 10 }
+          ]
+        },
+        {
+          "text": "Merg la vestiare",
+          "targetBlock": "vestiar",
+          "effects": []
+        },
+        {
+          "text": "Ma intorc urgent la nivelul 0",
+          "targetBlock": "culoar",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "lab_b",
+      "text": "Laboratorul B e un spatiu imens cu echipamente de ultimă generatie. Pe masa centrala sunt sute de eprubete. Intr-un frigider etichetat 'ANTIVIRUS' gasesti seringi cu lichid albastru. Pe un birou e un laptop deschis cu dosarul tau complet.",
+      "image": "https://images.unsplash.com/photo-1576086213369-97a306d36557?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Iau antidotul si citesc dosarul",
+          "targetBlock": "dosar_complet",
+          "effects": [
+            { "type": "SET", "property": "story.areAntidot", "value": 1 },
+            { "type": "ADD", "property": "player.inteligenta", "value": 15 }
+          ]
+        },
+        {
+          "text": "Iau antidotul si fug imediat",
+          "targetBlock": "culoar_cu_antidot",
+          "effects": [
+            { "type": "SET", "property": "story.areAntidot", "value": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dosar_complet",
+      "text": "Dosarul reveleaza totul: esti un cercetator al laboratorului care a descoperit experimente ilegale. Ti s-a administrat virusul sa taci. Codul de evacuare de urgenta e EXODUS-7744. Dosarul contine si dovezi ale crimelor laboratorului.",
+      "image": "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Descarc dosarul pe un stick si fug (am antidot + dovezi)",
+          "targetBlock": "final.erou",
+          "effects": [
+            { "type": "SET", "property": "story.areCodul", "value": 1 }
+          ]
+        },
+        {
+          "text": "Fug doar cu antidotul — e prea periculos cu dovezile",
+          "targetBlock": "culoar_cu_antidot",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "helipad",
+      "text": "Helipad-ul e pe acoperis. Vantul e puternic. E un elicopter parcat. Pilotul doarme in interiorul lui. Vad garzi pe scarile de acces.",
+      "image": "https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=800",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Il trezesc pe pilot si il conving sa ma duca (bani > 50)",
+          "targetBlock": "final.elicopter",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.energie",
+            "operator": ">",
+            "value": 50
+          },
+          "effects": [
+            { "type": "ADD", "property": "story.alarma", "value": 20 }
+          ]
+        },
+        {
+          "text": "Ma intorc si folosesc usa de evacuare",
+          "targetBlock": "culoar_cu_antidot",
+          "effects": []
+        }
+      ]
+    },
+    {
+      "id": "final.erou",
+      "text": "Evadezi prin usa de evacuare cu antidotul si dovezile. Afara te asteapta presa — cineva din interior ti-a trimis locatia. Dosarul este publicat international. Laboratorul e inchis. Esti tratat ca erou al drepturilor omului.\n\n*** SFARSIT - EVADARE SI DREPTATE ***\n\nAi salvat zeci de potentiale victime.",
+      "image": "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.evacuare_curata",
+      "text": "Codul EXODUS-7744 functioneaza. Usa de evacuare se deschide spre o alee laterala. Esti liber. Te pierzi in oras. Ai antidotul — vei supravietui.\n\n*** SFARSIT - EVADARE REUSITA ***\n\nLaburatorul nu stie inca ce s-a intamplat.",
+      "image": "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.evadare_riscanta",
+      "text": "Iesi pe usa principala mergand normal. Gardianul te opreste. Il privesti in ochi cu incredere maxima. Dupa 5 secunde interminabile te lasa sa treci. Afara — libertate.\n\n*** SFARSIT - EVADARE RISCANTA, DAR REUSITA ***",
+      "image": "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.elicopter",
+      "text": "Pilotul accepta dupa o scurta negociere. Elicopterul decolteaza in forfota gardienilor. Ajungi la spital. Antidotul functioneaza. Esti in siguranta.\n\n*** SFARSIT - EVADARE CU ELICOPTERUL ***",
+      "image": "https://images.unsplash.com/photo-1474302770737-173ee21bab63?w=800",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.alerta",
+      "text": "Alarma se declanseaza complet. Esti inconjurat inainte sa ajungi la usa. Te duc inapoi in celula, de data aceasta legat.\n\n*** SFARSIT - AI FOST PRINS ***",
+      "image": "https://images.unsplash.com/photo-1504439904031-93ded9f93e4e?w=800",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.prins",
+      "text": "Gardele au detectat activitate suspcta. Esti imobilizat pe culoar. Te duc inapoi in laborator pentru 'reprogramare'.\n\n*** SFARSIT - PRINS DE SISTEM DE SECURITATE ***",
+      "image": "https://images.unsplash.com/photo-1504439904031-93ded9f93e4e?w=800",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.moarte",
+      "text": "Virusul si-a facut efectul. Nu ai gasit antidotul la timp.\n\n*** SFARSIT - VIRUSUL A INVINS ***",
+      "image": "https://images.unsplash.com/photo-1576086213369-97a306d36557?w=800",
+      "isFinal": true,
+      "decisions": []
+    }
+  ]
+}
