@@ -1,9 +1,4 @@
-// ============================================================
-//  Evadare din Castelul Bran — proiect POO (echipă de 4)
-//  AUTOR PRINCIPAL: Persoana 3 — Editor (structura principală)
-//  NOTĂ: blocul marcat cu ">>> PERSOANA 4" (validare + jurnal)
-//  este realizat de Persoana 4. Restul fișierului este al Persoanei 3.
-// ============================================================
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -654,7 +649,7 @@ namespace EvadareBranEditor
                 if (!string.IsNullOrEmpty(a.MaxBlock) && !idBlocuri.Contains(a.MaxBlock)) erori.Add($"• Atribut '{a.Key}': MaxBlock '{a.MaxBlock}' nu există.");
             }
 
-            // §15.2: HudOrder unic între atributele vizibile în HUD
+            //  HudOrder unic între atributele vizibile în HUD
             var ordVizibile = _povesteCurenta.Attributes.Where(a => a.VisibleInHud).Select(a => a.HudOrder).ToList();
             var dupOrd = ordVizibile.GroupBy(x => x).Where(g => g.Count() > 1).Select(g => g.Key);
             foreach (var o in dupOrd) erori.Add($"• HudOrder duplicat la atribute vizibile: {o}.");
@@ -678,10 +673,10 @@ namespace EvadareBranEditor
                 }
             }
 
-            // §15.4: validarea resurselor (imagini)
+            //  validarea resurselor (imagini)
             ValideazaImagini(erori);
 
-            // §12.3: verificare accesibilitate (avertisment)
+            //  verificare accesibilitate (avertisment)
             VerificaAccesibilitate(erori);
 
             return erori;
@@ -714,7 +709,7 @@ namespace EvadareBranEditor
             }
         }
 
-        // §15.4: imaginile referite trebuie să existe și să aibă extensii compatibile
+        //  imaginile referite trebuie să existe și să aibă extensii compatibile
         private void ValideazaImagini(List<string> erori)
         {
             var refImagini = new List<(string Cale, string Ctx)>();
@@ -755,7 +750,7 @@ namespace EvadareBranEditor
             }
         }
 
-        // §12.3: BFS din blocul de start - blocurile inaccesibile sunt avertisment
+        //  BFS din blocul de start - blocurile inaccesibile sunt avertisment
         private void VerificaAccesibilitate(List<string> erori)
         {
             if (string.IsNullOrEmpty(_povesteCurenta.StartBlock)) return;
