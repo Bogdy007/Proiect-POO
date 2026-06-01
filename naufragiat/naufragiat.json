@@ -1,0 +1,694 @@
+{
+  "title": "Naufragiat pe Insula",
+  "startBlock": "plaja",
+  "properties": [
+    {
+      "key": "player.viata",
+      "hudLabel": "Viata",
+      "min": 0,
+      "max": 100,
+      "initial": 70,
+      "visibleInHud": true,
+      "hudOrder": 1,
+      "onMinBlock": "final.moarte"
+    },
+    {
+      "key": "player.apa",
+      "hudLabel": "Apa",
+      "min": 0,
+      "max": 100,
+      "initial": 60,
+      "visibleInHud": true,
+      "hudOrder": 2,
+      "onMinBlock": "final.deshidratat"
+    },
+    {
+      "key": "player.foame",
+      "hudLabel": "Foame",
+      "min": 0,
+      "max": 100,
+      "initial": 20,
+      "visibleInHud": true,
+      "hudOrder": 3,
+      "onMaxBlock": "final.infometat"
+    },
+    {
+      "key": "player.energie",
+      "hudLabel": "Energie",
+      "min": 0,
+      "max": 100,
+      "initial": 50,
+      "visibleInHud": true,
+      "hudOrder": 4
+    },
+    {
+      "key": "inventory.provizii",
+      "hudLabel": "Provizii",
+      "min": 0,
+      "max": 50,
+      "initial": 0,
+      "visibleInHud": true,
+      "hudOrder": 5
+    },
+    {
+      "key": "story.areCutit",
+      "hudLabel": "Cutit",
+      "min": 0,
+      "max": 1,
+      "initial": 0,
+      "visibleInHud": false,
+      "hudOrder": 90
+    },
+    {
+      "key": "story.areHarta",
+      "hudLabel": "Harta",
+      "min": 0,
+      "max": 1,
+      "initial": 0,
+      "visibleInHud": false,
+      "hudOrder": 91
+    },
+    {
+      "key": "story.arePluta",
+      "hudLabel": "Pluta",
+      "min": 0,
+      "max": 1,
+      "initial": 0,
+      "visibleInHud": false,
+      "hudOrder": 92
+    },
+    {
+      "key": "story.semnal",
+      "hudLabel": "Semnal",
+      "min": 0,
+      "max": 1,
+      "initial": 0,
+      "visibleInHud": false,
+      "hudOrder": 93
+    }
+  ],
+  "blocks": [
+    {
+      "id": "plaja",
+      "text": "Te trezesti pe o plaja pustie. Corabia ta s-a scufundat azi-noapte in furtuna si tu esti singurul supravietuitor. Soarele arde puternic. In departare vezi epava corabiei pe stanci, o jungla deasa si o stanca inalta.",
+      "image": "images/plaja.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Caut prin epava de pe mal",
+          "targetBlock": "epava",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -5 },
+            { "type": "ADD", "property": "player.foame", "value": 5 }
+          ]
+        },
+        {
+          "text": "Intru in jungla",
+          "targetBlock": "jungla",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 },
+            { "type": "ADD", "property": "player.apa", "value": -10 },
+            { "type": "ADD", "property": "player.foame", "value": 5 }
+          ]
+        },
+        {
+          "text": "Urc pe stanca sa vad imprejur",
+          "targetBlock": "stanca",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 },
+            { "type": "ADD", "property": "player.apa", "value": -5 }
+          ]
+        },
+        {
+          "text": "Imi fac o tabara pe plaja",
+          "targetBlock": "tabara"
+        },
+        {
+          "text": "Stau pe loc si astept sa ma salveze cineva (risc)",
+          "targetBlock": "plaja",
+          "effects": [
+            { "type": "ADD", "property": "player.apa", "value": -20 },
+            { "type": "ADD", "property": "player.foame", "value": 15 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "epava",
+      "text": "Epava corabiei e pe jumatate scufundata in apa. Cotrobaind prin ea gasesc un cutit ruginit, niste provizii uscate intr-o lada si o harta veche a insulei.",
+      "image": "images/epava.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Iau cutitul",
+          "targetBlock": "plaja",
+          "effects": [
+            { "type": "SET", "property": "story.areCutit", "value": 1 }
+          ]
+        },
+        {
+          "text": "Iau proviziile",
+          "targetBlock": "plaja",
+          "effects": [
+            { "type": "ADD", "property": "inventory.provizii", "value": 15 },
+            { "type": "ADD", "property": "player.foame", "value": -10 }
+          ]
+        },
+        {
+          "text": "Iau harta insulei",
+          "targetBlock": "plaja",
+          "effects": [
+            { "type": "SET", "property": "story.areHarta", "value": 1 }
+          ]
+        },
+        {
+          "text": "Iau tot ce gasesc (necesita energie >= 25)",
+          "targetBlock": "plaja",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.energie",
+            "operator": ">=",
+            "value": 25
+          },
+          "effects": [
+            { "type": "SET", "property": "story.areCutit", "value": 1 },
+            { "type": "SET", "property": "story.areHarta", "value": 1 },
+            { "type": "ADD", "property": "inventory.provizii", "value": 15 },
+            { "type": "ADD", "property": "player.energie", "value": -15 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "jungla",
+      "text": "Jungla e deasa si umeda. Aud animale prin tufisuri. Vad un izvor mic de apa, niste pomi cu fructe si o poteca care duce mai adanc in insula.",
+      "image": "images/jungla.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Beau apa din izvor",
+          "targetBlock": "jungla",
+          "effects": [
+            { "type": "ADD", "property": "player.apa", "value": 30 }
+          ]
+        },
+        {
+          "text": "Culeg fructe din pomi",
+          "targetBlock": "jungla",
+          "effects": [
+            { "type": "ADD", "property": "player.foame", "value": -15 },
+            { "type": "ADD", "property": "inventory.provizii", "value": 5 }
+          ]
+        },
+        {
+          "text": "Merg spre raul din apropiere",
+          "targetBlock": "rau",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -5 },
+            { "type": "ADD", "property": "player.apa", "value": -5 }
+          ]
+        },
+        {
+          "text": "Explorez adanc in jungla",
+          "targetBlock": "capcana",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 },
+            { "type": "ADD", "property": "player.foame", "value": 5 }
+          ]
+        },
+        {
+          "text": "Caut ruinele vechi (necesita harta)",
+          "targetBlock": "ruine",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.areHarta",
+            "operator": "==",
+            "value": 1
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 },
+            { "type": "ADD", "property": "player.apa", "value": -10 }
+          ]
+        },
+        {
+          "text": "Ma intorc pe plaja",
+          "targetBlock": "plaja"
+        }
+      ]
+    },
+    {
+      "id": "capcana",
+      "text": "Un mistret salbatic imi taie calea si grohaie amenintator. Are colti ascutiti si nu pare prietenos. Trebuie sa reactionez repede.",
+      "image": "images/capcana.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Il infrunt cu cutitul (necesita cutit)",
+          "targetBlock": "jungla",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.areCutit",
+            "operator": "==",
+            "value": 1
+          },
+          "effects": [
+            { "type": "ADD", "property": "inventory.provizii", "value": 20 },
+            { "type": "ADD", "property": "player.viata", "value": -10 },
+            { "type": "ADD", "property": "player.energie", "value": -10 }
+          ]
+        },
+        {
+          "text": "Fug inapoi (necesita energie > 25)",
+          "targetBlock": "jungla",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.energie",
+            "operator": ">",
+            "value": 25
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -20 },
+            { "type": "ADD", "property": "player.foame", "value": 5 }
+          ]
+        },
+        {
+          "text": "Ma urc intr-un copac sa scap",
+          "targetBlock": "jungla",
+          "effects": [
+            { "type": "ADD", "property": "player.viata", "value": -15 },
+            { "type": "ADD", "property": "player.energie", "value": -10 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rau",
+      "text": "Un rau limpede curge prin jungla. Apa pare buna de baut. Vad pesti inotand si malul celalalt duce spre niste stanci cu o pestera.",
+      "image": "images/rau.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Beau apa pe satule",
+          "targetBlock": "rau",
+          "effects": [
+            { "type": "ADD", "property": "player.apa", "value": 40 }
+          ]
+        },
+        {
+          "text": "Prind peste cu cutitul (necesita cutit)",
+          "targetBlock": "rau",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.areCutit",
+            "operator": "==",
+            "value": 1
+          },
+          "effects": [
+            { "type": "ADD", "property": "inventory.provizii", "value": 10 },
+            { "type": "ADD", "property": "player.foame", "value": -10 },
+            { "type": "ADD", "property": "player.energie", "value": -5 }
+          ]
+        },
+        {
+          "text": "Trec raul spre stanci",
+          "targetBlock": "pestera",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 },
+            { "type": "ADD", "property": "player.apa", "value": -5 }
+          ]
+        },
+        {
+          "text": "Ma intorc in jungla",
+          "targetBlock": "jungla"
+        }
+      ]
+    },
+    {
+      "id": "stanca",
+      "text": "De pe stanca inalta vad toata insula. Zaresc un golf ascuns, perfect pentru a construi o pluta, si un loc bun de unde as putea face un foc de semnalizare. Marea se intinde la nesfarsit.",
+      "image": "images/stanca.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Cobor spre golful ascuns",
+          "targetBlock": "golf",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 }
+          ]
+        },
+        {
+          "text": "Pregatesc locul pentru focul de semnal",
+          "targetBlock": "foc_semnal",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -5 }
+          ]
+        },
+        {
+          "text": "Ma intorc pe plaja",
+          "targetBlock": "plaja"
+        }
+      ]
+    },
+    {
+      "id": "pestera",
+      "text": "O pestera intunecata se deschide in stanca. Inauntru e racoare si liniste. Pe peretii pesterii vad semne vechi sapate in piatra, ca o harta spre ceva ascuns.",
+      "image": "images/pestera.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Ma odihnesc la adapost",
+          "targetBlock": "pestera",
+          "effects": [
+            { "type": "ADD", "property": "player.viata", "value": 20 },
+            { "type": "ADD", "property": "player.energie", "value": 25 },
+            { "type": "ADD", "property": "player.foame", "value": 5 }
+          ]
+        },
+        {
+          "text": "Explorez adanc pestera (necesita harta SAU cutit)",
+          "targetBlock": "comoara",
+          "condition": {
+            "type": "OR",
+            "conditions": [
+              { "type": "COMPARISON", "property": "story.areHarta", "operator": "==", "value": 1 },
+              { "type": "COMPARISON", "property": "story.areCutit", "operator": "==", "value": 1 }
+            ]
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 },
+            { "type": "ADD", "property": "player.apa", "value": -5 }
+          ]
+        },
+        {
+          "text": "Imi fac tabara aici",
+          "targetBlock": "tabara"
+        },
+        {
+          "text": "Ies afara spre jungla",
+          "targetBlock": "jungla"
+        }
+      ]
+    },
+    {
+      "id": "ruine",
+      "text": "Niste ruine acoperite de liane, ca un templu vechi parasit. Printre pietre gasesc provizii uitate si o harta mai detaliata a insulei.",
+      "image": "images/ruine.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Caut prin ruine",
+          "targetBlock": "ruine",
+          "effects": [
+            { "type": "ADD", "property": "inventory.provizii", "value": 10 },
+            { "type": "ADD", "property": "player.foame", "value": 5 },
+            { "type": "ADD", "property": "player.energie", "value": -5 }
+          ]
+        },
+        {
+          "text": "Iau harta detaliata",
+          "targetBlock": "ruine",
+          "effects": [
+            { "type": "SET", "property": "story.areHarta", "value": 1 }
+          ]
+        },
+        {
+          "text": "Merg spre pestera",
+          "targetBlock": "pestera",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 }
+          ]
+        },
+        {
+          "text": "Ma intorc in jungla",
+          "targetBlock": "jungla"
+        }
+      ]
+    },
+    {
+      "id": "golf",
+      "text": "Un golf linistit cu apa putin adanca. Sunt multe lemne aduse de valuri, perfecte pentru o pluta. Marea pare calma astazi, dar nu se stie pentru cat timp.",
+      "image": "images/golf.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Construiesc o pluta (necesita cutit SI (energie > 30 SAU provizii >= 10))",
+          "targetBlock": "golf",
+          "condition": {
+            "type": "AND",
+            "conditions": [
+              { "type": "COMPARISON", "property": "story.areCutit", "operator": "==", "value": 1 },
+              {
+                "type": "OR",
+                "conditions": [
+                  { "type": "COMPARISON", "property": "player.energie", "operator": ">", "value": 30 },
+                  { "type": "COMPARISON", "property": "inventory.provizii", "operator": ">=", "value": 10 }
+                ]
+              }
+            ]
+          },
+          "effects": [
+            { "type": "SET", "property": "story.arePluta", "value": 1 },
+            { "type": "ADD", "property": "player.energie", "value": -25 },
+            { "type": "ADD", "property": "player.foame", "value": 10 }
+          ]
+        },
+        {
+          "text": "Pornesc pe mare cu pluta (necesita pluta)",
+          "targetBlock": "final.pluta",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.arePluta",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "text": "Sar in apa si inot spre larg (disperat, fara pluta)",
+          "targetBlock": "final.inecat",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.arePluta",
+            "operator": "==",
+            "value": 0
+          }
+        },
+        {
+          "text": "Ma intorc la stanca",
+          "targetBlock": "stanca"
+        }
+      ]
+    },
+    {
+      "id": "foc_semnal",
+      "text": "Adun lemne uscate intr-o gramada mare pe varful stancii. De aici, fumul s-ar vedea de la mare distanta pe mare. Orice corabie care trece ar putea sa ma observe.",
+      "image": "images/foc_semnal.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Aprind focul de semnal (necesita energie > 20)",
+          "targetBlock": "foc_semnal",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.energie",
+            "operator": ">",
+            "value": 20
+          },
+          "effects": [
+            { "type": "SET", "property": "story.semnal", "value": 1 },
+            { "type": "ADD", "property": "player.energie", "value": -15 }
+          ]
+        },
+        {
+          "text": "Astept o corabie langa foc (necesita semnal aprins)",
+          "targetBlock": "final.salvat",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.semnal",
+            "operator": "==",
+            "value": 1
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.apa", "value": -10 },
+            { "type": "ADD", "property": "player.foame", "value": 10 }
+          ]
+        },
+        {
+          "text": "Ma intorc la stanca",
+          "targetBlock": "stanca"
+        }
+      ]
+    },
+    {
+      "id": "comoara",
+      "text": "In fundul pesterii gasesc un cufar vechi de pirati, plin cu aur si pietre pretioase! Dar comoara nu ma ajuta cu nimic daca nu reusesc sa plec de pe insula.",
+      "image": "images/comoara.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Plec de pe insula cu pluta si comoara (necesita pluta)",
+          "targetBlock": "final.comoara",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.arePluta",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "text": "Fac semn unei corabii cu comoara (necesita semnal aprins)",
+          "targetBlock": "final.comoara",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "story.semnal",
+            "operator": "==",
+            "value": 1
+          }
+        },
+        {
+          "text": "Iau comoara si caut o cale de iesire",
+          "targetBlock": "golf",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -10 }
+          ]
+        },
+        {
+          "text": "Las comoara si ma intorc",
+          "targetBlock": "pestera"
+        }
+      ]
+    },
+    {
+      "id": "tabara",
+      "text": "Imi fac o tabara cu un adapost din frunze si crengi. Aici pot sa ma odihnesc si sa pun proviziile la adapost. Se face seara incet.",
+      "image": "images/tabara.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Mananc din provizii (necesita provizii >= 5)",
+          "targetBlock": "tabara",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "inventory.provizii",
+            "operator": ">=",
+            "value": 5
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.foame", "value": -20 },
+            { "type": "ADD", "property": "inventory.provizii", "value": -5 },
+            { "type": "ADD", "property": "player.viata", "value": 5 }
+          ]
+        },
+        {
+          "text": "Dorm pana dimineata",
+          "targetBlock": "noapte"
+        },
+        {
+          "text": "Merg spre pestera",
+          "targetBlock": "pestera",
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -5 }
+          ]
+        },
+        {
+          "text": "Ma intorc pe plaja",
+          "targetBlock": "plaja"
+        }
+      ]
+    },
+    {
+      "id": "noapte",
+      "text": "Noaptea e rece si plina de sunete ciudate. Tremur de frig langa focul mic. La un moment dat aud ceva miscandu-se in intuneric, chiar langa tabara.",
+      "image": "images/noapte.jpg",
+      "isFinal": false,
+      "decisions": [
+        {
+          "text": "Pun mai multe lemne pe foc (necesita energie > 15)",
+          "targetBlock": "tabara",
+          "condition": {
+            "type": "COMPARISON",
+            "property": "player.energie",
+            "operator": ">",
+            "value": 15
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.viata", "value": 10 },
+            { "type": "ADD", "property": "player.energie", "value": -10 }
+          ]
+        },
+        {
+          "text": "Stau treaz si pazesc tabara (energie > 20 SI viata > 30)",
+          "targetBlock": "tabara",
+          "condition": {
+            "type": "AND",
+            "conditions": [
+              { "type": "COMPARISON", "property": "player.energie", "operator": ">", "value": 20 },
+              { "type": "COMPARISON", "property": "player.viata", "operator": ">", "value": 30 }
+            ]
+          },
+          "effects": [
+            { "type": "ADD", "property": "player.energie", "value": -15 },
+            { "type": "ADD", "property": "player.foame", "value": 5 }
+          ]
+        },
+        {
+          "text": "Ma ascund si dorm infricosat",
+          "targetBlock": "tabara",
+          "effects": [
+            { "type": "ADD", "property": "player.viata", "value": -10 },
+            { "type": "ADD", "property": "player.apa", "value": -10 },
+            { "type": "ADD", "property": "player.foame", "value": 10 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "final.salvat",
+      "text": "Dupa ore de asteptare, o corabie zareste fumul meu! Trimit o barca dupa mine si ma urc la bord. Marinarii imi dau apa si mancare. Sunt salvat!\n\n*** SFARSIT - AI FOST SALVAT DE O CORABIE ***",
+      "image": "images/salvat.jpg",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.pluta",
+      "text": "Impingi pluta in apa si te lasi purtat de valuri departe de insula. Dupa doua zile pe mare, ajungi la o coasta locuita. Ai reusit!\n\n*** SFARSIT - AI EVADAT CU PLUTA ***",
+      "image": "images/pluta.jpg",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.comoara",
+      "text": "Pleci de pe insula cu cufarul de comori langa tine. Ajungi teafar la mal si devii cel mai bogat naufragiat din istorie. Visele tale s-au implinit!\n\n*** SFARSIT - AI SCAPAT CU COMOARA ***",
+      "image": "images/comoaraFinal.jpg",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.inecat",
+      "text": "Inoti cat poti de departe, dar valurile sunt prea puternice. Curentul te trage la fund si nu mai ai putere sa lupti. Marea te inghite.\n\n*** SFARSIT - TE-AI INECAT ***",
+      "image": "images/inecat.jpg",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.moarte",
+      "text": "Ranile si epuizarea au fost prea mult. Te prabusesti pe nisip si nu te mai poti ridica. Insula iti devine mormant.\n\n*** SFARSIT - AI MURIT ***",
+      "image": "images/moarte.jpg",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.deshidratat",
+      "text": "Soarele necrutator si lipsa apei te-au sleit. Buzele iti sunt crapate si nu mai vezi clar. Te prabusesti, deshidratat complet.\n\n*** SFARSIT - AI MURIT DE SETE ***",
+      "image": "images/deshidratat.jpg",
+      "isFinal": true,
+      "decisions": []
+    },
+    {
+      "id": "final.infometat",
+      "text": "Nu ai mai gasit nimic de mancare de zile intregi. Puterile te-au parasit complet si nu te mai poti tine pe picioare.\n\n*** SFARSIT - AI MURIT DE FOAME ***",
+      "image": "images/infometat.jpg",
+      "isFinal": true,
+      "decisions": []
+    }
+  ]
+}
